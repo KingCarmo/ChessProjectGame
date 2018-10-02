@@ -157,9 +157,6 @@ private Boolean checkBlackOponent(int newX, int newY) {
         atackedPiece = tmp1.substring(0, (tmp1.length() - 4));
         if (((tmp1.contains("White")))) {
                 oponent = true;
-                //if(atackedPiece.contains("King")){
-                // Winner = true;
-                // }
         } else {
                 oponent = false;
         }
@@ -228,10 +225,7 @@ public void mouseReleased(MouseEvent e) {
         //
         //
         //
-
-
-
-
+        // Black Pawn and WhitePawn are similar when it comes to moving, +75 for moving up and -75 for moving down
 
         if (landingX <= 7 && landingY <= 7) {
 
@@ -318,7 +312,9 @@ public void mouseReleased(MouseEvent e) {
                                                                 coordinateX = startX + x;
                                                                 coordinateY = startY + x;
                                                         }
-                                                } else if (startX > landingX && startY < landingY) {
+                                                }
+
+                                                else if (startX > landingX && startY < landingY) {
                                                         if (piecePresent((startX - x) * 75, (startY + x) * 75)) {
                                                                 countPieces += 1;
                                                                 coordinateX = startX - x;
@@ -330,7 +326,9 @@ public void mouseReleased(MouseEvent e) {
                                                                 coordinateX = startX + x;
                                                                 coordinateY = startY - x;
                                                         }
-                                                } else {
+                                                }
+
+                                                else {
                                                         if (piecePresent((startX - x) * 75, (startY - x) * 75)) {
                                                                 countPieces += 1;
                                                                 coordinateX = startX - x;
@@ -361,6 +359,7 @@ public void mouseReleased(MouseEvent e) {
 
                                         }
                                 }
+
                                 if (xMovement == 0 && yMovement > 0) {
                                         for (int i = 0; i < yMovement + 1; i++) {
                                                 if (startY < landingY) {
