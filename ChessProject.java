@@ -220,7 +220,7 @@ public void mouseReleased(MouseEvent e) {
         System.out.println("The landing coordinates are: (" + landingX + " ; " + landingY + ")");
         System.out.println("---------------------------------------------------");
 
-        // 75 for
+        // 75 is each Dimension of the square
         //
         //
         //
@@ -409,15 +409,36 @@ public void mouseReleased(MouseEvent e) {
                                 validMove = false;
                         }
                 }
-                //King Movement
-                if(pieceName.contains("King")){
-                  if ((xMovement == 1) || (yMovement == 1)) {
-                    validMove = true;
+                /*
+                  The King is the most important piece in chess.
+                  If the king is trapped so that its capture is unavoidable, the game is over and that player loses.
+                  The king has little mobility, so it is also considered one of the weakest pieces in the game.
+                  The king can move to any adjacent square. That is, it can move one square in any direction:
+                  horizontally, vertically, or diagonally.
+                  It cannot move onto a square occupied by a piece of the same color.
+
+                  if(king is being placed){
+                    if((xMovement ==1)||(yMovement ==1)&&(e.getX(), e.getY()*75)){
 
                   }
                 }
+
+                */
+                //BlackKing Movement
+
+                if(pieceName.contains("BlackKing")){
+                  if((xMovement == 1)||(yMovement ==1)&&(!piecePresent(e.getX(), (e.getY()+75)))) {
+                    validMove = true;
+                  }
+                }
+
+
+
+
+
+
                 // Moving Bishop
-                if (pieceName.contains("Bishup")) {
+                if (pieceName.contains("Bishop")) {
                         int countPieces = 0;
                         int cordinateX = 0;
                         int cordinateY = 0;
