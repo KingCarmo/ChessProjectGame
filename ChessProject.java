@@ -225,7 +225,7 @@ public void mouseReleased(MouseEvent e) {
         //
         //
         //
-        // Black Pawn and WhitePawn are similar when it comes to moving, +75 for moving up and -75 for moving down
+        // Black Pawn and WhitePawn are similar when it comes to moving, +75(black) for moving up and -75 for moving down(white)
 
         if (landingX <= 7 && landingY <= 7) {
 
@@ -294,7 +294,7 @@ public void mouseReleased(MouseEvent e) {
                         }
 
                 }
-
+                //Author@ Dan Nemantu || Queen Code - Kevin Carmody
                 // Kween Movement
                 if (pieceName.contains("Queen")) {
                         int countPieces = 0;
@@ -303,7 +303,7 @@ public void mouseReleased(MouseEvent e) {
                         if ((xMovement == yMovement) || (xMovement == 0 & yMovement > 0) || (xMovement > 0 && yMovement == 0)) {
 
 
-                                // Checking Bishop Movement Type
+                                // Checking Bishop Movement Type to move the queen
                                 if (xMovement == yMovement) {
                                         for (int x = 1; x < xMovement + 1; x++) {
                                                 if (startX < landingX && startY < landingY) {
@@ -409,36 +409,139 @@ public void mouseReleased(MouseEvent e) {
                                 validMove = false;
                         }
                 }
+                //Author@Dan Nemantu || End of Queen Code - Kevin Carmody
                 /*
-                  The King is the most important piece in chess.
-                  If the king is trapped so that its capture is unavoidable, the game is over and that player loses.
-                  The king has little mobility, so it is also considered one of the weakest pieces in the game.
-                  The king can move to any adjacent square. That is, it can move one square in any direction:
-                  horizontally, vertically, or diagonally.
-                  It cannot move onto a square occupied by a piece of the same color.
+                   The King is the most important piece in chess.
+                   If the king is trapped so that its capture is unavoidable, the game is over and that player loses.
+                   The king has little mobility, so it is also considered one of the weakest pieces in the game.
+                   The king can move to any adjacent square. That is, it can move one square in any direction:
+                   horizontally, vertically, or diagonally.
+                   It cannot move onto a square occupied by a piece of the same color.
 
-                  if(king is being placed){
+                   if(king is being placed){
                     if((xMovement ==1)||(yMovement ==1)&&(e.getX(), e.getY()*75)){
 
-                  }
+                   }
+                   }
+
+                 */
+                //King Movement
+                if(pieceName.contains("King")) {
+                        int countPieces = 0;
+                        int coordinateX = 0;
+                        int coordinateY = 0;
+
+                        if(((xMovement == 1 || yMovement == 1) || (yMovement == 1 || xMovement == 1))) {
+                                // Checking Bishop Movement Type to move the queen
+                                if (xMovement == yMovement) {
+                                        for (int x = 1; x < xMovement + 1; x++) {
+                                                if (startX < landingX && startY < landingY) {
+                                                        if (piecePresent((startX + x) * 75, (startY + x) * 75)) {
+                                                                countPieces += 1;
+                                                                coordinateX = startX + x;
+                                                                coordinateY = startY + x;
+                                                        }
+                                                }
+
+                                                else if (startX > landingX && startY < landingY) {
+                                                        if (piecePresent((startX - x) * 75, (startY + x) * 75)) {
+                                                                countPieces += 1;
+                                                                coordinateX = startX - x;
+                                                                coordinateY = startY + x;
+                                                        }
+                                                } else if (startX < landingX && startY > landingY) {
+                                                        if (piecePresent((startX + x) * 75, (startY - x) * 75)) {
+                                                                countPieces += 1;
+                                                                coordinateX = startX + x;
+                                                                coordinateY = startY - x;
+                                                        }
+                                                }
+
+                                                else {
+                                                        if (piecePresent((startX - x) * 75, (startY - x) * 75)) {
+                                                                countPieces += 1;
+                                                                coordinateX = startX - x;
+                                                                coordinateY = startY - x;
+                                                        }
+                                                }
+                                        }
+                                }
+
+                                // RooksMovement
+                                if (xMovement > 0 && yMovement == 0) {
+                                        for (int i = 0; i < xMovement + 1; i++) {
+                                                if (startX < landingX) {
+                                                        if (piecePresent((startX + i) * 75, startY * 75)) {
+                                                                countPieces += 1;
+                                                                coordinateX = startX + i;
+                                                                coordinateY = startY;
+                                                        }
+                                                        System.out.println("Checking xCoordinates: " + startX + i);
+                                                } else {
+                                                        if (piecePresent((startX - i) * 75, startY * 75)) {
+                                                                countPieces += 1;
+                                                                coordinateX = startX - i;
+                                                                coordinateY = startY;
+                                                        }
+                                                        System.out.println("Checking xCoordinates: " + (startX - i));
+                                                }
+
+                                        }
+                                }
+
+                                if (xMovement == 0 && yMovement > 0) {
+                                        for (int i = 0; i < yMovement + 1; i++) {
+                                                if (startY < landingY) {
+                                                        if (piecePresent(startX * 75, (startY + i) * 75)) {
+                                                                countPieces += 1;
+                                                                coordinateX = startX;
+                                                                coordinateY = startY + i;
+                                                        }
+                                                }
+                                                else {
+                                                        if (piecePresent(startX * 75, (startY - i) * 75)) {
+                                                                countPieces += 1;
+                                                                coordinateX = startX;
+                                                                coordinateY = startY - i;
+                                                        }
+                                                }
+                                        }
+                                }
+                                // Check if there is any obstacles
+                                if (countPieces > 0) {
+                                        if (countPieces == 1) {
+                                                if (coordinateX == landingX && coordinateY == landingY) {
+                                                        if (pieceName.contains("Black")) {
+                                                                if (checkBlackOponent(landingX * 75, landingY * 75)) {
+                                                                        validMove = true;
+                                                                }
+                                                        } else {
+                                                                if (checkWhiteOponent(landingX * 75, landingY * 75)) {
+                                                                        validMove = true;
+                                                                }
+                                                        }
+                                                }
+                                                else {
+                                                        validMove = false;
+                                                }
+                                        }
+                                        else {
+                                                validMove = false;
+                                        }
+                                }
+                                else {
+                                        validMove = true;
+                                }
+                        }
+                        else {
+                                System.out.println("Not a valid Move!");
+                                validMove = false;
+                        }
                 }
-
-                */
-                //BlackKing Movement
-
-                if(pieceName.contains("BlackKing")){
-                  if((xMovement == 1)||(yMovement ==1)&&(!piecePresent(e.getX(), (e.getY()+75)))) {
-                    validMove = true;
-                  }
-                }
-
-
-
-
 
 
                 // Moving Bishop
-                if (pieceName.contains("Bishop")) {
+                if (pieceName.contains("Bishup")) {
                         int countPieces = 0;
                         int cordinateX = 0;
                         int cordinateY = 0;
@@ -512,6 +615,8 @@ public void mouseReleased(MouseEvent e) {
                                 if (xMovement > 0 && yMovement == 0) {
                                         for (int i = 0; i < xMovement + 1; i++) {
                                                 if (startX < landingX) {
+
+                                                        //Black Rook
                                                         if (piecePresent((startX + i) * 75, startY * 75)) {
                                                                 countPieces += 1;
                                                                 cordinateX = startX + i;
@@ -519,6 +624,7 @@ public void mouseReleased(MouseEvent e) {
                                                         }
                                                         System.out.println("Checking xCoordinates: " + startX + i);
                                                 } else {
+                                                        //White Rook
                                                         if (piecePresent((startX - i) * 75, startY * 75)) {
                                                                 countPieces += 1;
                                                                 cordinateX = startX - i;
