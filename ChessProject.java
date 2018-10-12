@@ -184,6 +184,21 @@ private Boolean checkBlackOponent(int newX, int newY) {
         return oponent;
 }
 
+private String getPieceName(int pieceAtX, int pieceAtY){
+        Component c1 = chessBoard.findComponentAt(pieceAtX, pieceAtY);
+        if(c1 instanceof JPanel) {
+                return "nothing";
+        }
+        else if (c1 instanceof JLabel) {
+                JLabel awaitingPiece = (JLabel) c1;
+                String tmp1 = awaitingPiece.getIcon().toString();
+                return tmp1;
+        }
+        else{
+                return "nothing";
+        }
+}
+
 /*
  * This method is called when we press the Mouse. So we need to find out what
  * piece we have selected. We may also not have selected a piece!
@@ -443,121 +458,176 @@ public void mouseReleased(MouseEvent e) {
 
                  */
 
-                //King Movement
+                //King Code Movement with Restrictions
                 if(pieceName.contains("King")) {
-                        int countPieces = 0;
-                        int coordinateX = 0;
-                        int coordinateY = 0;
+                        if(((landingX < 0)|| (landingX > 7)) ||(landingY < 0) || (landingY > 7)) {
+                                validMove = false;
+                        }
+                        else if (xMovement == 0 && yMovement == 0) {
+                                validMove = false;
+                        }
 
-                        if(((xMovement == 1 || yMovement == 1) || (yMovement == 1 || xMovement == 1))) {
-                                // Checking Bishop Movement Type to move the queen
-                                if (xMovement == yMovement) {
-                                        for (int x = 1; x < xMovement + 1; x++) {
-                                                if (startX < landingX && startY < landingY) {
-                                                        if (piecePresent((startX + x) * 75, (startY + x) * 75)) {
-                                                                countPieces += 1;
-                                                                coordinateX = startX + x;
-                                                                coordinateY = startY + x;
-                                                        }
-                                                }
+                        else if ((getPieceName((e.getX() + 75), e.getY()).contains("King")) ||
+                                 (getPieceName((e.getX() - 75), e.getY()).contains("King")) ||
+                                 (getPieceName((e.getX() ), (e.getY() + 75)).contains("King")) ||
+                                 (getPieceName((e.getX() ), (e.getY() - 75)).contains("King")) ||
+                                 (getPieceName((e.getX() + 75), (e.getY() + 75)).contains("King")) ||
+                                 (getPieceName((e.getX() + 75), (e.getY() - 75)).contains("King")) ||
+                                 (getPieceName((e.getX() - 75), (e.getY() + 75)).contains("King")) ||
+                                 (getPieceName((e.getX() - 75), (e.getY() - 75)).contains("King"))) {
+                                validMove = false;
+                        }
 
-                                                else if (startX > landingX && startY < landingY) {
-                                                        if (piecePresent((startX - x) * 75, (startY + x) * 75)) {
-                                                                countPieces += 1;
-                                                                coordinateX = startX - x;
-                                                                coordinateY = startY + x;
-                                                        }
-                                                } else if (startX < landingX && startY > landingY) {
-                                                        if (piecePresent((startX + x) * 75, (startY - x) * 75)) {
-                                                                countPieces += 1;
-                                                                coordinateX = startX + x;
-                                                                coordinateY = startY - x;
-                                                        }
+                        else if((xMovement == 1) || (yMovement == 1) || ((xMovement == 1) && (yMovement == 1))) {
+                                if (piecePresent(e.getX(), e.getY() )) {
+                                        if (pieceName.contains("White")) {
+                                                if(checkWhiteOponent(e.getX(), e.getY())) {
+                                                        validMove = true;
                                                 }
-
-                                                else {
-                                                        if (piecePresent((startX - x) * 75, (startY - x) * 75)) {
-                                                                countPieces += 1;
-                                                                coordinateX = startX - x;
-                                                                coordinateY = startY - x;
-                                                        }
-                                                }
-                                        }
-                                }
-
-                                // RooksMovement
-                                if (xMovement > 0 && yMovement == 0) {
-                                        for (int i = 0; i < xMovement + 1; i++) {
-                                                if (startX < landingX) {
-                                                        if (piecePresent((startX + i) * 75, startY * 75)) {
-                                                                countPieces += 1;
-                                                                coordinateX = startX + i;
-                                                                coordinateY = startY;
-                                                        }
-                                                        System.out.println("Checking xCoordinates: " + startX + i);
-                                                } else {
-                                                        if (piecePresent((startX - i) * 75, startY * 75)) {
-                                                                countPieces += 1;
-                                                                coordinateX = startX - i;
-                                                                coordinateY = startY;
-                                                        }
-                                                        System.out.println("Checking xCoordinates: " + (startX - i));
-                                                }
-
-                                        }
-                                }
-
-                                if (xMovement == 0 && yMovement > 0) {
-                                        for (int i = 0; i < yMovement + 1; i++) {
-                                                if (startY < landingY) {
-                                                        if (piecePresent(startX * 75, (startY + i) * 75)) {
-                                                                countPieces += 1;
-                                                                coordinateX = startX;
-                                                                coordinateY = startY + i;
-                                                        }
-                                                }
-                                                else {
-                                                        if (piecePresent(startX * 75, (startY - i) * 75)) {
-                                                                countPieces += 1;
-                                                                coordinateX = startX;
-                                                                coordinateY = startY - i;
-                                                        }
-                                                }
-                                        }
-                                }
-                                // Check if there is any obstacles
-                                if (countPieces > 0) {
-                                        if (countPieces == 1) {
-                                                if (coordinateX == landingX && coordinateY == landingY) {
-                                                        if (pieceName.contains("Black")) {
-                                                                if (checkBlackOponent(landingX * 75, landingY * 75)) {
-                                                                        validMove = true;
-                                                                }
-                                                        } else {
-                                                                if (checkWhiteOponent(landingX * 75, landingY * 75)) {
-                                                                        validMove = true;
-                                                                }
-                                                        }
-                                                }
-                                                else {
+                                                else{
                                                         validMove = false;
                                                 }
                                         }
-                                        else {
-                                                validMove = false;
+                                        else{
+                                                if (checkBlackOponent(e.getX(), e.getY())) {
+                                                        validMove = true;
+                                                }
+                                                else{
+                                                        validMove = false;
+                                                }
                                         }
                                 }
-                                else {
+                                else{
                                         validMove = true;
                                 }
                         }
-                        else {
-                                System.out.println("Not a valid Move!");
-                                validMove = false;
-                        }
+
                 }
-
-
+                //Old King Code
+                // if(pieceName.contains("King")) {
+                //         int countPieces = 0;
+                //         int coordinateX = 0;
+                //         int coordinateY = 0;
+                //
+                //         if(((xMovement == 1 || yMovement == 1) || (yMovement == 1 || xMovement == 1))) {
+                //           if(((landingX < 0)|| (landingX > 7)) ||(landingY < 0) || (landingY > 7)){
+                //                 // Checking Bishop Movement Type to move the queen
+                //                 if (xMovement == yMovement) {
+                //                   if((getPieceName((e.getX() + 75) , e.getY()).contains("King")) ||
+                //                   (getPieceName((e.getX() + 75) , e.getY()).contains("King")) ||
+                //                   (getPieceName((e.getX() + 75) , e.getY()).contains("King")) ||
+                //                   (getPieceName((e.getX() + 75) , e.getY()).contains("King")) ||
+                //                   (getPieceName((e.getX() + 75) , e.getY()).contains("King")) ||
+                //                   (getPieceName((e.getX() + 75) , e.getY()).contains("King")) ||
+                //                   (getPieceName((e.getX() + 75) , e.getY()).contains("King")) ||
+                //                   (getPieceName((e.getX() + 75) , e.getY()).contains("King"))) {
+                //                     validMove = false;
+                //                   }
+                //                         for (int x = 1; x < xMovement + 1; x++) {
+                //                                 if (startX < landingX && startY < landingY) {
+                //                                         if (piecePresent((startX + x) * 75, (startY + x) * 75)) {
+                //                                                 countPieces += 1;
+                //                                                 coordinateX = startX + x;
+                //                                                 coordinateY = startY + x;
+                //                                         }
+                //                                 }
+                //
+                //                                 else if (startX > landingX && startY < landingY) {
+                //                                         if (piecePresent((startX - x) * 75, (startY + x) * 75)) {
+                //                                                 countPieces += 1;
+                //                                                 coordinateX = startX - x;
+                //                                                 coordinateY = startY + x;
+                //                                         }
+                //                                 } else if (startX < landingX && startY > landingY) {
+                //                                         if (piecePresent((startX + x) * 75, (startY - x) * 75)) {
+                //                                                 countPieces += 1;
+                //                                                 coordinateX = startX + x;
+                //                                                 coordinateY = startY - x;
+                //                                         }
+                //                                 }
+                //
+                //                                 else {
+                //                                         if (piecePresent((startX - x) * 75, (startY - x) * 75)) {
+                //                                                 countPieces += 1;
+                //                                                 coordinateX = startX - x;
+                //                                                 coordinateY = startY - x;
+                //                                         }
+                //                                 }
+                //                         }
+                //                 }
+                //
+                //                 // RooksMovement
+                //                 if (xMovement > 0 && yMovement == 0) {
+                //                         for (int i = 0; i < xMovement + 1; i++) {
+                //                                 if (startX < landingX) {
+                //                                         if (piecePresent((startX + i) * 75, startY * 75)) {
+                //                                                 countPieces += 1;
+                //                                                 coordinateX = startX + i;
+                //                                                 coordinateY = startY;
+                //                                         }
+                //                                         System.out.println("Checking xCoordinates: " + startX + i);
+                //                                 } else {
+                //                                         if (piecePresent((startX - i) * 75, startY * 75)) {
+                //                                                 countPieces += 1;
+                //                                                 coordinateX = startX - i;
+                //                                                 coordinateY = startY;
+                //                                         }
+                //                                         System.out.println("Checking xCoordinates: " + (startX - i));
+                //                                 }
+                //
+                //                         }
+                //                 }
+                //
+                //                 if (xMovement == 0 && yMovement > 0) {
+                //                         for (int i = 0; i < yMovement + 1; i++) {
+                //                                 if (startY < landingY) {
+                //                                         if (piecePresent(startX * 75, (startY + i) * 75)) {
+                //                                                 countPieces += 1;
+                //                                                 coordinateX = startX;
+                //                                                 coordinateY = startY + i;
+                //                                         }
+                //                                 }
+                //                                 else {
+                //                                         if (piecePresent(startX * 75, (startY - i) * 75)) {
+                //                                                 countPieces += 1;
+                //                                                 coordinateX = startX;
+                //                                                 coordinateY = startY - i;
+                //                                         }
+                //                                 }
+                //                         }
+                //                 }
+                //                 // Check if there is any obstacles
+                //                 if (countPieces > 0) {
+                //                         if (countPieces == 1) {
+                //                                 if (coordinateX == landingX && coordinateY == landingY) {
+                //                                         if (pieceName.contains("Black")) {
+                //                                                 if (checkBlackOponent(landingX * 75, landingY * 75)) {
+                //                                                         validMove = true;
+                //                                                 }
+                //                                         } else {
+                //                                                 if (checkWhiteOponent(landingX * 75, landingY * 75)) {
+                //                                                         validMove = true;
+                //                                                 }
+                //                                         }
+                //                                 }
+                //                                 else {
+                //                                         validMove = false;
+                //                                 }
+                //                         }
+                //                         else {
+                //                                 validMove = false;
+                //                         }
+                //                 }
+                //                 else {
+                //                         validMove = true;
+                //                 }
+                //         }
+                //         else {
+                //                 System.out.println("Not a valid Move!");
+                //                 validMove = false;
+                //         }
+                //       }
+                // }
                 // Moving Bishop
                 if (pieceName.contains("Bishup")) {
                         int countPieces = 0;
