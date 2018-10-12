@@ -134,18 +134,29 @@ private Boolean piecePresent(int x, int y) {
  * This is a method to check if a piece is a Black piece.
  */
 private Boolean checkWhiteOponent(int newX, int newY) {
+
         Boolean oponent;
         Component c1 = chessBoard.findComponentAt(newX, newY);
         JLabel awaitingPiece = (JLabel) c1;
         String tmp1 = awaitingPiece.getIcon().toString();
         if (((tmp1.contains("Black")))) {
                 oponent = true;
-        } else {
+                /*
+                   This method is used to dispaly the winner after the King is taken
+                 */
+                if (((tmp1.contains("Black")))) {
+                        if (tmp1.contains("King")) {
+                                JOptionPane.showMessageDialog(null, "White Wins");
+                                System.exit(0);
+                        }
+                }
+        }
+        else
+        {
                 oponent = false;
         }
         return oponent;
 }
-
 /*
  * This is a method to check if a piece is a White piece.
  */
@@ -154,10 +165,20 @@ private Boolean checkBlackOponent(int newX, int newY) {
         Component c1 = chessBoard.findComponentAt(newX, newY);
         JLabel awaitingPiece = (JLabel) c1;
         String tmp1 = awaitingPiece.getIcon().toString();
-        atackedPiece = tmp1.substring(0, (tmp1.length() - 4));
         if (((tmp1.contains("White")))) {
                 oponent = true;
-        } else {
+                /*
+                   This method is used to dispaly the winner after the King is taken
+                 */
+                if (((tmp1.contains("White")))) {
+                        if (tmp1.contains("King")) {
+                                JOptionPane.showMessageDialog(null, "Black Wins");
+                                System.exit(0);
+                        }
+                }
+        }
+        else
+        {
                 oponent = false;
         }
         return oponent;
@@ -221,10 +242,7 @@ public void mouseReleased(MouseEvent e) {
         System.out.println("---------------------------------------------------");
 
         // 75 is each Dimension of the square
-        //
-        //
-        //
-        //
+
         // Black Pawn and WhitePawn are similar when it comes to moving, +75(black) for moving up and -75 for moving down(white)
 
         if (landingX <= 7 && landingY <= 7) {
@@ -294,7 +312,6 @@ public void mouseReleased(MouseEvent e) {
                         }
 
                 }
-                //Author@ Dan Nemantu || Queen Code - Kevin Carmody
                 // Kween Movement
                 if (pieceName.contains("Queen")) {
                         int countPieces = 0;
@@ -359,7 +376,7 @@ public void mouseReleased(MouseEvent e) {
 
                                         }
                                 }
-
+                                //checking obastacles
                                 if (xMovement == 0 && yMovement > 0) {
                                         for (int i = 0; i < yMovement + 1; i++) {
                                                 if (startY < landingY) {
@@ -378,7 +395,7 @@ public void mouseReleased(MouseEvent e) {
                                                 }
                                         }
                                 }
-                                // Check if there is any obstacles
+                                // Checking for more obastacles(taking pieces)
                                 if (countPieces > 0) {
                                         if (countPieces == 1) {
                                                 if (coordinateX == landingX && coordinateY == landingY) {
@@ -409,7 +426,7 @@ public void mouseReleased(MouseEvent e) {
                                 validMove = false;
                         }
                 }
-                //Author@Dan Nemantu || End of Queen Code - Kevin Carmody
+
                 /*
                    The King is the most important piece in chess.
                    If the king is trapped so that its capture is unavoidable, the game is over and that player loses.
@@ -425,6 +442,7 @@ public void mouseReleased(MouseEvent e) {
                    }
 
                  */
+
                 //King Movement
                 if(pieceName.contains("King")) {
                         int countPieces = 0;
@@ -686,9 +704,7 @@ public void mouseReleased(MouseEvent e) {
                                 validMove = false;
                         }
                 }
-
         }
-
         // Promoting the little bois to big bois
         if (!validMove) {
                 int location = 0;
